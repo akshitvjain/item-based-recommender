@@ -2,7 +2,7 @@ import pyspark
 from pyspark.sql import SQLContext
 from pyspark.sql.types import StructType, StructField, StringType
 
-rating_file_path = 'data/ratings_Home_and_Kitchen.csv'
+rating_file_path = 'data/ratings_Clothing_Shoes_and_Jewelry.csv'
 meta_file_path = 'data/meta.json'
 
 class LoadDataset():
