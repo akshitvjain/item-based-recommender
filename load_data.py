@@ -18,7 +18,7 @@ class LoadDataset():
 		# read ratings csv, build schema struct
 		csv_struct = StructType([StructField('user', StringType(), True), 
 								StructField('item', StringType(), True),
-								StructField('rating', DoubleType(), True),											# need to be numeric 
+								StructField('rating', DoubleType(), True),
 								StructField('timestamp', StringType(), True)])
 		ratings_df = self.sqlContext.read.csv(rating_file_path, schema=csv_struct) 
 		ratings_df = ratings_df.select('user', 'item', 'rating')
