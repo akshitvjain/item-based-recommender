@@ -22,7 +22,6 @@ class LoadDataset():
 								StructField('timestamp', StringType(), True)])
 		ratings_df = self.sqlContext.read.csv(rating_file_path, schema=csv_struct) 
 		ratings_df = ratings_df.select('user', 'item', 'rating')
-		print(ratings_df.show())
 
 		# read metadata for each product
 		meta_df = self.sqlContext.read.json(meta_file_path)
@@ -30,16 +29,14 @@ class LoadDataset():
 		return(ratings_df, meta_df)
 
 	def transform_data(self, df):
-		print(df.columns)
 		indexers = [StringIndexer(inputCol=column, outputCol=column+'_index', handleInvalid='skip')
 					for column in list(set(df.columns)-set(['rating']))]
 	
 		pipeline = Pipeline(stages=indexers)
 		transformed = pipeline.fit(df).transform(df)
-		print(transformed.show())
 		return(transformed)
 
 	def split_data(self, df):
-		(training, test) = df.randomSplit([0.8, 0.2])
+		(training, test) = df.randomSplit([0.8, 0.2], seed=5)
 		return(training, test)
 
