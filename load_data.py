@@ -40,3 +40,5 @@ class LoadDataset():
 		(training, test) = df.randomSplit([0.8, 0.2], seed=5)
 		return(training, test)
 
+	def get_sql_context(self):
+		return self.sqlContext
