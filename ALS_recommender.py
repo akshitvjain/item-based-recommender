@@ -43,8 +43,7 @@ class ItemBasedRecommender():
 			_id = row.__getattr__('id')
 			features = row.__getattr__('features')
 			similarity_score = self._cosine_similarity(features, item_features)
-			if _id != get_movie_id:
-				lol.append([_id, similarity_score])
+			lol.append([_id, similarity_score])
 
 		R = Row('item_index', 'similarity_score')
 		similar_items_df = self.sqlContext.createDataFrame([R(col[0], float(col[1])) for col in lol])
@@ -59,16 +58,14 @@ class ItemBasedRecommender():
 	
 	def get_recommendations(self, similar_items_df):
 		recommendations_df = self.train_df.join(similar_items_df, self.train_df.item_index == similar_items_df.item_index)
-		recommendations_df = recommendations_df.select('item', 'similarity_score').distinct()
-		recommendations_df = recommendations_df.orderBy(col('similarity_score').desc())
-		print(recommendations_df.show(5))
+		recommendations_df = recommendations_df.select('user', 'item', 'rating', 'similarity_score')
+		recommendations_df = recommendations_df.orderBy(col('similarity_score').desc)
+		print(recommendations_df.show())
 
 
-movie_id = int(input('Enter item index (0-9723) to generate similar recommendations: '))
+movie_id = int(input('Enter movie_id (0-9723) to generate similar recommendations: '))
 item_based_rec = ItemBasedRecommender()
 model, itemFactors = item_based_rec.train_model()
 #item_based_rec.test_model(model)
 similar_items_df = item_based_rec.compute_similarity(itemFactors, movie_id)
-print('\n')
-print('Showing Top 5 Recommendations for item at index {}'.format(movie_id))
 item_based_rec.get_recommendations(similar_items_df)
